@@ -51,7 +51,7 @@ void AcoustoElastic<dim>::make_grid()
    std::ofstream outmesh("grid_out.msh");
    grid_out.write_msh(triangulation,outmesh);
 
-
+/*
    for(typename Triangulation<dim>::active_cell_iterator cell=dof_handler.begin_active(); cell!=dof_handler.end(); ++cell)
    {
       if((std::fabs(cell->center()[dim-1]) > 0.006) 
@@ -62,7 +62,7 @@ void AcoustoElastic<dim>::make_grid()
       else
          cell->set_material_id(fluid_domain_id);
    }
-
+*/
 }
 
 template <int dim>
@@ -106,7 +106,7 @@ void AcoustoElastic<dim>::my_sparsity_pattern()
    //FEFaceValues<dim> acoustic_fe_face_values(acoustic_fe, common_face_quadrature, update_values | update_normal_vectors | update_JxW_values);
    FEFaceValues<dim> acoustic_fe_face_values(acoustic_fe, common_face_quadrature, update_default);
 
-   const unsigned int elastic_dofs_per_cell = elastic_fe.dofs_per_cell;
+   //const unsigned int elastic_dofs_per_cell = elastic_fe.dofs_per_cell;
    const unsigned int acoustic_dofs_per_cell = acoustic_fe.dofs_per_cell;
 
    typename hp::DoFHandler<dim>::active_cell_iterator
@@ -207,7 +207,7 @@ void AcoustoElastic<dim>::setup_system()
    // Setting fixed BC at boundary id 1
    const FEValuesExtractors::Vector displacements(0);
    VectorTools::interpolate_boundary_values(dof_handler, 
-                  1, 
+                  SOLID_FIXED_BOUNDARY, 
                   ZeroFunction<dim>(dim*2+2), 
                   constraints, 
                   fe_collection.component_mask(displacements));
@@ -297,7 +297,7 @@ void AcoustoElastic<dim>::assemble_system(bool step1)
 
    // Global Point load vector
    //ElasticRHS<dim> elastic_rhs;
-   Point<dim> f_p(0.124,0.0,0.013);
+   Point<dim> f_p(0.120,0.0,0.011);
    Point<dim> f_n(0,0,1);
    my_point_source_vector(dof_handler, f_p, f_n, system_rhs);
    system_rhs*=1e5;
@@ -621,7 +621,7 @@ void AcoustoElastic<dim>::assemble_system_aux()
                                                 update_normal_vectors | update_hessians | 
                                                 update_quadrature_points | update_JxW_values);
 
-   const unsigned int elastic_dofs_per_cell = elastic_fe.dofs_per_cell;
+   //const unsigned int elastic_dofs_per_cell = elastic_fe.dofs_per_cell;
    const unsigned int acoustic_dofs_per_cell = acoustic_fe.dofs_per_cell;
 
    FullMatrix<double> cell_matrix;
@@ -852,7 +852,7 @@ void AcoustoElastic<dim>::solve()
 template <int dim>
 void AcoustoElastic<dim>::read_input(unsigned int n_sol)
 {
-   const unsigned int N_dofs=dof_handler.n_dofs();
+   //const unsigned int N_dofs=dof_handler.n_dofs();
    const std::string input_sol_name = "input/solution_";
     const std::string input_ext = ".dat";
     std::string input_num;
@@ -1168,7 +1168,8 @@ void AcoustoElastic<dim>::run(unsigned int step)
             //output_results(n_sweep);
             //pod_aux();
             //solve_reduced();
-            output_binary(n_sweep);
+            //output_binary(n_sweep);
+            output_results(n_sweep);
          }
       }
       else

@@ -24,8 +24,8 @@ class AcoustoElastic
    private:
    enum
    {
-      solid_domain_id,
-      fluid_domain_id
+      solid_domain_id = SOLID_DOMAIN,
+      fluid_domain_id = FLUID_DOMAIN
    };
 
    const unsigned int degree;

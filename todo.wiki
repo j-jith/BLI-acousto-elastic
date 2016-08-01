@@ -1,0 +1,6 @@
+- [X] Get domain/boundary id from gmsh grid file
+- [ ] Run a sample acousto-elastic problem
+- [ ] Run BLI step-1
+- [ ] Compute wave number ratio and validate
+- [ ] Run BLI step-2
+- [ ] Set point load from main.cc instead of the assembly function
