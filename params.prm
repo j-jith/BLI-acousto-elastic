@@ -1,0 +1,54 @@
+# Listing of Parameters
+# ---------------------
+# Young's modulus
+set E_s   = 2e11
+
+# Poisson's ratio
+set nu_s  = 0.3
+
+# Density of solid material
+set rho_s = 7800
+
+# Density of fluid material
+set rho_0 = 286.13
+
+# Speed of sound in fluid
+set c_0   = 283.76
+
+# Isobaric heat capacity of fluid
+set cp    = 863.6
+
+# Ratio of heat capacities of fluid
+set gamma = 1.28
+
+# Thermal conductivity of fluid
+set kappa = 0.0745
+
+# Viscosity of fluid
+set mu    = 5.5459e-5
+
+# second order coefficient of polynomial fit of omega*sqrt(omega)
+set fit_c2 = 0.007243
+# set fit_c2 = 0
+
+# first order coefficient of polynomial fit of omega*sqrt(omega)
+set fit_c1 = 37.85
+# set fit_c1 = 0
+
+# constant coefficient of polynomial fit of omega*sqrt(omega)
+set fit_c0 = -1.465e4
+
+# Initial Frequency
+set f_0   = 150
+
+# Final Frequency
+set f_1   = 749
+
+# No. of Frequencies
+set n_f   = 25
+
+# No. of POD inputs
+set N_pod = 50
+
+# POD threshold
+set pod_thresh = 5e-16
