@@ -1,0 +1,11 @@
+# cmake files
+Makefile
+CMakeCache.txt
+cmake_install.cmake
+CMakeFiles/
+# vim swap files
+.*.swp
+.*.swo
+*~
+# binary executable
+main

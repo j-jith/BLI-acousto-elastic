@@ -13,7 +13,7 @@ int main()
 
    bool assemble_and_dump=false;
    AcoustoElastic<3> ac_el(prm, 2, assemble_and_dump);
-   ac_el.run();
+   ac_el.run(0);
 
    timer.stop ();
    deallog << "\n\n***All done!*** (" << timer.wall_time() << "s)" << std::endl;

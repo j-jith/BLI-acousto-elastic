@@ -16,4 +16,7 @@ void my_point_source_vector (const hp::DoFHandler<dim,spacedim>   &dof_handler,
                              const Point<dim>                     &orientation,
                              Vector<double>                       &rhs_vector);
 
+// template functions implementation
+#include "my_point_source_vector.tcc"
+
 #endif

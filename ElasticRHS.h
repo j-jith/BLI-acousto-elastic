@@ -13,4 +13,7 @@ class ElasticRHS : public Function<dim>
    
 };
 
+// template class implementation
+#include "ElasticRHS.tcc"
+
 #endif

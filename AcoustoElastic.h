@@ -97,4 +97,7 @@ class AcoustoElastic
    Vector<double> red_rhs;
 };
 
+// template class implementation
+#include "AcoustoElastic.tcc"
+
 #endif

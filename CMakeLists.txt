@@ -1,22 +1,3 @@
-##
-#  CMake script for the step-1 tutorial program:
-##
-
-# Set the name of the project and target:
-SET(TARGET "main")
-
-# Declare all source files the target consists of:
-SET(TARGET_SRC
-  ${TARGET}.cc
-  AcoustoElastic.cc
-  ElasticRHS.cc
-  my_point_source_vector.cc
-  ParameterReader.cc
-  # You can specify additional files here!
-  )
-
-# Usually, you will not need to modify anything beyond this point...
-
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
 
 FIND_PACKAGE(deal.II 8.0 QUIET
@@ -31,5 +12,22 @@ IF(NOT ${deal.II_FOUND})
 ENDIF()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
-PROJECT(${TARGET})
-DEAL_II_INVOKE_AUTOPILOT()
+
+PROJECT(main)
+
+ADD_EXECUTABLE(main 
+    main.cc
+    ParameterReader.cc)
+DEAL_II_SETUP_TARGET(main)
+
+ADD_CUSTOM_TARGET(debug
+  COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Debug ${CMAKE_SOURCE_DIR}
+  COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
+  COMMENT "Switch CMAKE_BUILD_TYPE to Debug"
+  )
+
+ADD_CUSTOM_TARGET(release
+  COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Release ${CMAKE_SOURCE_DIR}
+  COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
+  COMMENT "Switch CMAKE_BUILD_TYPE to Release"
+  )
