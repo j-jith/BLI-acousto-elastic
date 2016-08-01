@@ -12,7 +12,10 @@ AcoustoElastic<dim>::AcoustoElastic(ParameterHandler &param, const unsigned int 
 {
    fe_collection.push_back(elastic_fe);
    fe_collection.push_back(acoustic_fe);
+
+   point_load = false; // point load not applied by default
 }
+
 
 template <int dim>
 bool AcoustoElastic<dim>::cell_is_in_solid_domain(const typename hp::DoFHandler<dim>::cell_iterator &cell)
@@ -204,7 +207,7 @@ void AcoustoElastic<dim>::setup_system()
    //set constraints here
    constraints.clear();
 
-   // Setting fixed BC at boundary id 1
+   // Setting fixed BC at boundary 
    const FEValuesExtractors::Vector displacements(0);
    VectorTools::interpolate_boundary_values(dof_handler, 
                   SOLID_FIXED_BOUNDARY, 
@@ -223,30 +226,6 @@ void AcoustoElastic<dim>::setup_system()
 
    my_sparsity_pattern();
       
-   //CompressedSparsityPattern c_sparsity(dof_handler.n_dofs());
-
-   //
-   //Table<2,DoFTools::Coupling> cell_coupling(fe_collection.n_components(), fe_collection.n_components());
-   //Table<2,DoFTools::Coupling> face_coupling(fe_collection.n_components(), fe_collection.n_components());
-
-   //for(unsigned int c=0; c<fe_collection.n_components(); c++)
-   //{
-   //   for(unsigned int d=0; d<fe_collection.n_components(); d++)
-   //   {
-   //      if((c<2*dim+1 && d<2*dim+1) || (c>=2*dim+1 && d>=2*dim+1))
-   //         cell_coupling[c][d]=DoFTools::always;
-
-   //      if(c<2*dim+1 && d>=2*dim+1)
-   //         face_coupling[c][d]=DoFTools::always;
-   //   }
-   //}
-
-   ////DoFTools::make_flux_sparsity_pattern(dof_handler,c_sparsity,cell_coupling,face_coupling);
-   //DoFTools::make_flux_sparsity_pattern(dof_handler,c_sparsity);
-
-   //constraints.condense(c_sparsity);
-   //sparsity_pattern.copy_from(c_sparsity);
-
    system_matrix.reinit(sparsity_pattern);
    system_matrix_aux.reinit(sparsity_pattern);
    mass_matrix.reinit(sparsity_pattern);
@@ -255,6 +234,17 @@ void AcoustoElastic<dim>::setup_system()
    system_rhs.reinit(dof_handler.n_dofs());
    solution.reinit(dof_handler.n_dofs());
    global_ktr.reinit(dof_handler.n_dofs());
+}
+
+template <int dim>
+void AcoustoElastic<dim>::set_point_load(Point<dim> location, Point<dim> direction, double magnitude)
+{
+    point_load = true;
+
+    point_load_loc = location;
+    point_load_dir = direction;
+    point_load_mag = magnitude;
+
 }
 
 template <int dim>
@@ -297,10 +287,15 @@ void AcoustoElastic<dim>::assemble_system(bool step1)
 
    // Global Point load vector
    //ElasticRHS<dim> elastic_rhs;
-   Point<dim> f_p(0.120,0.0,0.011);
-   Point<dim> f_n(0,0,1);
-   my_point_source_vector(dof_handler, f_p, f_n, system_rhs);
-   system_rhs*=1e5;
+   // Point<dim> f_p(0.120,0.0,0.011);
+   // Point<dim> f_n(0,0,1);
+   // my_point_source_vector(dof_handler, f_p, f_n, system_rhs);
+   // system_rhs*=1e5;
+   if(point_load)
+   {
+        my_point_source_vector(dof_handler, point_load_loc, point_load_dir, system_rhs);
+        system_rhs*=point_load_mag;
+   }
    
    const FEValuesExtractors::Vector displacementsR(0);
    const FEValuesExtractors::Vector displacementsI(dim);

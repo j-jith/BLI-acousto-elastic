@@ -1,6 +1,13 @@
+== Full ==
 - [X] Get domain/boundary id from gmsh grid file
-- [ ] Run a sample acousto-elastic problem
-- [ ] Run BLI step-1
+- [X] Run a sample acousto-elastic problem
+- [X] Set point load from main.cc instead of the assembly function
+
+== Step 1 ==
+- [ ] Add fluid assembly with approx. second-order form
+- [ ] Add mulit-point Arnoldi reduction function (write to disk)
+- [ ] Read Arnoldi vectors and orthogonalise them (read from disk)
+- [ ] Project and solve
+
+== Step 2 ==
 - [ ] Compute wave number ratio and validate
-- [ ] Run BLI step-2
-- [ ] Set point load from main.cc instead of the assembly function

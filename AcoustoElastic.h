@@ -19,6 +19,7 @@ class AcoustoElastic
 {
    public:
    AcoustoElastic(ParameterHandler &, const unsigned int, bool);
+   void set_point_load(Point<dim> location, Point<dim> direction, double magnitude);
    void run(unsigned int step);
 
    private:
@@ -64,12 +65,20 @@ class AcoustoElastic
    double f_0, f_1;
    unsigned int n_f;
    bool sweep;
+
+   // point load
+   bool point_load; // set to true if applying a point load
+   Point<dim> point_load_loc; // location of point load
+   Point<dim> point_load_dir; // normal vector(direction) of point load
+   double point_load_mag; //magnitude of point load
    
    double E_s, nu_s, rho_s;
    double lambda_s, mu_s;
 
    double rho_0, c_0, mu, kappa, cp, gamma;
 
+   // for approximating omega * sqrt(omega)
+   bool step1_approx;
    double fit_c2, fit_c1, fit_c0;
 
    Triangulation<dim> triangulation;

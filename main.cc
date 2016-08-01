@@ -13,6 +13,13 @@ int main()
 
    bool assemble_and_dump=false;
    AcoustoElastic<3> ac_el(prm, 2, assemble_and_dump);
+
+   // set point load
+   Point<3> force_loc(0.120,0.0,0.011);
+   Point<3> force_dir(0,0,1);
+   double force_mag = 1e3;
+   ac_el.set_point_load(force_loc, force_dir, force_mag);
+
    ac_el.run(ACOUSTO_ELASTIC_STEP);
 
    timer.stop ();

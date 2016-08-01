@@ -12,3 +12,6 @@ main
 # output files for debugging
 prm_out.txt
 grid_out.msh
+# FRF output
+sweep/
+binary_op/
