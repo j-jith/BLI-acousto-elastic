@@ -7,6 +7,14 @@ void ParameterReader::declare_parameters()
 {
   //prm.enter_subsection ("Physical constants");
   //{
+      prm.declare_entry("dimensions", "2",
+                        Patterns::Integer(2, 3),
+                        "Dimension of the problem");
+
+      prm.declare_entry("degree_shape", "1",
+                        Patterns::Integer(1),
+                        "Degree of the FE shape functions");
+
       prm.declare_entry("f_0", "100",
                         Patterns::Double(0),
                         "Initial Frequency");
@@ -55,6 +63,22 @@ void ParameterReader::declare_parameters()
                         Patterns::Double(0),
                         "Ratio of heat capacities of fluid");
 
+      prm.declare_entry("point_load", "false",
+                        Patterns::Bool(),
+                        "Set flag to true for applying point load");
+      prm.declare_entry("point_load_loc", "0.0, 0.0, 0.0",
+                        Patterns::List(Patterns::Double(), 2, 3),
+                        "Location of point load: x, y, z");
+      prm.declare_entry("point_load_dir", "0.0, 0.0, 0.0",
+                        Patterns::List(Patterns::Double(), 2, 3),
+                        "Direction of point load: x, y, z");
+      prm.declare_entry("point_load_mag", "0",
+                        Patterns::Double(0),
+                        "Magnitude of point load");
+
+      prm.declare_entry("step1_approx", "false",
+                        Patterns::Bool(),
+                        "Set flag to true for second-order approximate form of step-1");
       prm.declare_entry("fit_c2", "0.002533",
                         Patterns::Double(0),
                         "2nd order coefficient of polynomial fit of omega*sqrt(omega)");
@@ -64,6 +88,7 @@ void ParameterReader::declare_parameters()
       prm.declare_entry("fit_c0", "0",
                         Patterns::Double(),
                         "constant coefficient of polynomial fit of omega*sqrt(omega)");
+
       prm.declare_entry("N_pod", "1",
                         Patterns::Integer(0),
                         "No. of POD input solutions");

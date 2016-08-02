@@ -40,6 +40,7 @@ class AcoustoElastic
    cell_is_in_fluid_domain(const typename hp::DoFHandler<dim>::cell_iterator &cell); 
 
    void make_grid();
+   void read_params();
    void set_active_fe_indices();
    void my_sparsity_pattern();
    void setup_system();

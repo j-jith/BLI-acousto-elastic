@@ -1,5 +1,12 @@
 # Listing of Parameters
 # ---------------------
+
+# Dimensions (2 or 3)
+set dimensions = 3
+
+# Degree of FE shape functions
+set degree_shape = 2
+
 # Young's modulus
 set E_s   = 2e11
 
@@ -26,6 +33,18 @@ set kappa = 0.0745
 
 # Viscosity of fluid
 set mu    = 5.5459e-5
+
+# Apply point load
+set point_load = true
+# Point load location
+set point_load_loc = 0.120, 0.0, 0.011
+# Point load direction
+set point_load_dir = 0.0, 0.0, 1.0
+# Point load magnitude
+set point_load_mag = 1e3
+
+# second-order approximate form of step-1
+set step1_approx = true
 
 # second order coefficient of polynomial fit of omega*sqrt(omega)
 set fit_c2 = 0.007243

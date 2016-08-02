@@ -11,16 +11,13 @@ int main()
    ParameterReader   param(prm);
    param.read_parameters("params.prm");
 
+   const unsigned int dim = 3;
+   unsigned int degree = prm.get_integer("degree_shape");
+
    bool assemble_and_dump=false;
-   AcoustoElastic<3> ac_el(prm, 2, assemble_and_dump);
+   AcoustoElastic<dim> ac_el(prm, degree, assemble_and_dump);
 
-   // set point load
-   Point<3> force_loc(0.120,0.0,0.011);
-   Point<3> force_dir(0,0,1);
-   double force_mag = 1e3;
-   ac_el.set_point_load(force_loc, force_dir, force_mag);
-
-   ac_el.run(ACOUSTO_ELASTIC_STEP);
+   ac_el.run(BLI_STEP_1);
 
    timer.stop ();
    deallog << "\n\n***All done!*** (" << timer.wall_time() << "s)" << std::endl;

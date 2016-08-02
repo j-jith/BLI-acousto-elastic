@@ -2,9 +2,10 @@
 - [X] Get domain/boundary id from gmsh grid file
 - [X] Run a sample acousto-elastic problem
 - [X] Set point load from main.cc instead of the assembly function
+- [X] Read load from params
 
 == Step 1 ==
-- [ ] Add fluid assembly with approx. second-order form
+- [X] Add fluid assembly with approx. second-order form
 - [ ] Add mulit-point Arnoldi reduction function (write to disk)
 - [ ] Read Arnoldi vectors and orthogonalise them (read from disk)
 - [ ] Project and solve

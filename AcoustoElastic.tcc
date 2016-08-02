@@ -419,84 +419,167 @@ void AcoustoElastic<dim>::assemble_system(bool step1)
          {
             //Boundary integrals
             double bnd_A0=0;
-            for(unsigned int face=0; face<GeometryInfo<dim>::faces_per_cell; ++face)
+            if(step1_approx) // approximate second-order system fro step-1
             {
-              if((cell->face(face)->at_boundary()) //&& (cell->face(face)->boundary_indicator()==0))
-                || (cell->at_boundary(face)==false && cell_is_in_solid_domain(cell->neighbor(face))))
-              {
-                  bnd_A0=(1/sqrt(2))*(0.5*sqrt(mu/rho_0/c_0) + (gamma-1)*sqrt(kappa/rho_0/c_0/cp));
+                for(unsigned int face=0; face<GeometryInfo<dim>::faces_per_cell; ++face)
+                {
+                  if((cell->face(face)->at_boundary()) //&& (cell->face(face)->boundary_indicator()==0))
+                    || (cell->at_boundary(face)==false && cell_is_in_solid_domain(cell->neighbor(face))))
+                  {
+                    bnd_A0=(1/sqrt(2))*(0.5*sqrt(mu/rho_0/c_0) + (gamma-1)*sqrt(kappa/rho_0/c_0/cp));
 
-                  acoustic_fe_face_values.reinit(cell,face);
+                    acoustic_fe_face_values.reinit(cell,face);
 
-                  for(unsigned int i=0; i<acoustic_fe_face_values.dofs_per_cell; ++i)
+                    for(unsigned int i=0; i<acoustic_fe_face_values.dofs_per_cell; ++i)
                       for(unsigned int j=0; j<acoustic_fe_face_values.dofs_per_cell; ++j)
-                          if(acoustic_fe.has_support_on_face(i,face) && acoustic_fe.has_support_on_face(j,face))
-                              for(unsigned int q_point=0; q_point<acoustic_fe_face_values.n_quadrature_points; ++q_point)
-                              {
-                                  cell_mass_matrix(i,j) +=  acoustic_fe_face_values[pressureR].value(i,q_point) *
-                                                            acoustic_fe_face_values[pressureR].value(j,q_point) *
-                                                            (fit_c2/c_0/sqrt(c_0))*bnd_A0*
-                                                            acoustic_fe_face_values.JxW(q_point)
-                                                            +
-                                                            acoustic_fe_face_values[pressureR].value(i,q_point) *
-                                                            acoustic_fe_face_values[pressureI].value(j,q_point) *
-                                                            (fit_c2/c_0/sqrt(c_0))*bnd_A0*
-                                                            acoustic_fe_face_values.JxW(q_point)
-                                                            +
-                                                            acoustic_fe_face_values[pressureI].value(i,q_point) *
-                                                            acoustic_fe_face_values[pressureI].value(j,q_point) *
-                                                            (fit_c2/c_0/sqrt(c_0))*bnd_A0*
-                                                            acoustic_fe_face_values.JxW(q_point)
-                                                            -
-                                                            acoustic_fe_face_values[pressureI].value(i,q_point) *
-                                                            acoustic_fe_face_values[pressureR].value(j,q_point) *
-                                                            (fit_c2/c_0/sqrt(c_0))*bnd_A0*
-                                                            acoustic_fe_face_values.JxW(q_point);
+                        if(acoustic_fe.has_support_on_face(i,face) && acoustic_fe.has_support_on_face(j,face))
+                          for(unsigned int q_point=0; q_point<acoustic_fe_face_values.n_quadrature_points; ++q_point)
+                          {
+                            cell_mass_matrix(i,j) +=  acoustic_fe_face_values[pressureR].value(i,q_point) *
+                                            acoustic_fe_face_values[pressureR].value(j,q_point) *
+                                            (fit_c2/c_0/sqrt(c_0))*bnd_A0*
+                                                        acoustic_fe_face_values.JxW(q_point)
+                                                        +
+                                            acoustic_fe_face_values[pressureR].value(i,q_point) *
+                                            acoustic_fe_face_values[pressureI].value(j,q_point) *
+                                            (fit_c2/c_0/sqrt(c_0))*bnd_A0*
+                                                        acoustic_fe_face_values.JxW(q_point)
+                                                        +
+                                                 acoustic_fe_face_values[pressureI].value(i,q_point) *
+                                            acoustic_fe_face_values[pressureI].value(j,q_point) *
+                                            (fit_c2/c_0/sqrt(c_0))*bnd_A0*
+                                                        acoustic_fe_face_values.JxW(q_point)
+                                                        -
+                                            acoustic_fe_face_values[pressureI].value(i,q_point) *
+                                            acoustic_fe_face_values[pressureR].value(j,q_point) *
+                                            (fit_c2/c_0/sqrt(c_0))*bnd_A0*
+                                                        acoustic_fe_face_values.JxW(q_point);
 
-                                  cell_damp_matrix(i,j) +=  acoustic_fe_face_values[pressureR].value(i,q_point) *
-                                                            acoustic_fe_face_values[pressureR].value(j,q_point) *
-                                                            (fit_c1/c_0/sqrt(c_0))*bnd_A0*
-                                                            acoustic_fe_face_values.JxW(q_point)
-                                                            +
-                                                            acoustic_fe_face_values[pressureR].value(i,q_point) *
-                                                            acoustic_fe_face_values[pressureI].value(j,q_point) *
-                                                            (fit_c1/c_0/sqrt(c_0))*bnd_A0*
-                                                            acoustic_fe_face_values.JxW(q_point)
-                                                            +
-                                                            acoustic_fe_face_values[pressureI].value(i,q_point) *
-                                                            acoustic_fe_face_values[pressureI].value(j,q_point) *
-                                                            (fit_c1/c_0/sqrt(c_0))*bnd_A0*
-                                                            acoustic_fe_face_values.JxW(q_point)
-                                                            -
-                                                            acoustic_fe_face_values[pressureI].value(i,q_point) *
-                                                            acoustic_fe_face_values[pressureR].value(j,q_point) *
-                                                            (fit_c1/c_0/sqrt(c_0))*bnd_A0*
-                                                            acoustic_fe_face_values.JxW(q_point);
+                            cell_damp_matrix(i,j) +=  acoustic_fe_face_values[pressureR].value(i,q_point) *
+                                            acoustic_fe_face_values[pressureR].value(j,q_point) *
+                                            (fit_c1/c_0/sqrt(c_0))*bnd_A0*
+                                                        acoustic_fe_face_values.JxW(q_point)
+                                                        +
+                                            acoustic_fe_face_values[pressureR].value(i,q_point) *
+                                            acoustic_fe_face_values[pressureI].value(j,q_point) *
+                                            (fit_c1/c_0/sqrt(c_0))*bnd_A0*
+                                                        acoustic_fe_face_values.JxW(q_point)
+                                                        +
+                                                 acoustic_fe_face_values[pressureI].value(i,q_point) *
+                                            acoustic_fe_face_values[pressureI].value(j,q_point) *
+                                            (fit_c1/c_0/sqrt(c_0))*bnd_A0*
+                                                        acoustic_fe_face_values.JxW(q_point)
+                                                        -
+                                            acoustic_fe_face_values[pressureI].value(i,q_point) *
+                                            acoustic_fe_face_values[pressureR].value(j,q_point) *
+                                            (fit_c1/c_0/sqrt(c_0))*bnd_A0*
+                                                        acoustic_fe_face_values.JxW(q_point);
 
-                                  cell_stif_matrix(i,j) +=  acoustic_fe_face_values[pressureR].value(i,q_point) *
-                                                            acoustic_fe_face_values[pressureR].value(j,q_point) *
-                                                            (fit_c0/c_0/sqrt(c_0))*bnd_A0*
-                                                            acoustic_fe_face_values.JxW(q_point)
-                                                            +
-                                                            acoustic_fe_face_values[pressureR].value(i,q_point) *
-                                                            acoustic_fe_face_values[pressureI].value(j,q_point) *
-                                                            (fit_c0/c_0/sqrt(c_0))*bnd_A0*
-                                                            acoustic_fe_face_values.JxW(q_point)
-                                                            +
-                                                            acoustic_fe_face_values[pressureI].value(i,q_point) *
-                                                            acoustic_fe_face_values[pressureI].value(j,q_point) *
-                                                            (fit_c0/c_0/sqrt(c_0))*bnd_A0*
-                                                            acoustic_fe_face_values.JxW(q_point)
-                                                            -
-                                                            acoustic_fe_face_values[pressureI].value(i,q_point) *
-                                                            acoustic_fe_face_values[pressureR].value(j,q_point) *
-                                                            (fit_c0/c_0/sqrt(c_0))*bnd_A0*
-                                                            acoustic_fe_face_values.JxW(q_point);
-                                              
-                              }
-              }
+                            cell_stif_matrix(i,j) +=  acoustic_fe_face_values[pressureR].value(i,q_point) *
+                                            acoustic_fe_face_values[pressureR].value(j,q_point) *
+                                            (fit_c0/c_0/sqrt(c_0))*bnd_A0*
+                                                        acoustic_fe_face_values.JxW(q_point)
+                                                        +
+                                            acoustic_fe_face_values[pressureR].value(i,q_point) *
+                                            acoustic_fe_face_values[pressureI].value(j,q_point) *
+                                            (fit_c0/c_0/sqrt(c_0))*bnd_A0*
+                                                        acoustic_fe_face_values.JxW(q_point)
+                                                        +
+                                                 acoustic_fe_face_values[pressureI].value(i,q_point) *
+                                            acoustic_fe_face_values[pressureI].value(j,q_point) *
+                                            (fit_c0/c_0/sqrt(c_0))*bnd_A0*
+                                                        acoustic_fe_face_values.JxW(q_point)
+                                                        -
+                                            acoustic_fe_face_values[pressureI].value(i,q_point) *
+                                            acoustic_fe_face_values[pressureR].value(j,q_point) *
+                                            (fit_c0/c_0/sqrt(c_0))*bnd_A0*
+                                                        acoustic_fe_face_values.JxW(q_point);
+                                                  
+                          }
+                  }
+                }
             }
-        }
+            else // normal step-1
+            {
+                for(unsigned int face=0; face<GeometryInfo<dim>::faces_per_cell; ++face)
+                {
+                  if((cell->face(face)->at_boundary()) //&& (cell->face(face)->boundary_indicator()==0))
+                    || (cell->at_boundary(face)==false && cell_is_in_solid_domain(cell->neighbor(face))))
+                  {
+                      bnd_A0=(1/sqrt(2))*(0.5*sqrt(mu/rho_0/c_0) + (gamma-1)*sqrt(kappa/rho_0/c_0/cp));
+
+                      acoustic_fe_face_values.reinit(cell,face);
+
+                      for(unsigned int i=0; i<acoustic_fe_face_values.dofs_per_cell; ++i)
+                          for(unsigned int j=0; j<acoustic_fe_face_values.dofs_per_cell; ++j)
+                              if(acoustic_fe.has_support_on_face(i,face) && acoustic_fe.has_support_on_face(j,face))
+                                  for(unsigned int q_point=0; q_point<acoustic_fe_face_values.n_quadrature_points; ++q_point)
+                                  {
+                                      cell_mass_matrix(i,j) +=  acoustic_fe_face_values[pressureR].value(i,q_point) *
+                                                                acoustic_fe_face_values[pressureR].value(j,q_point) *
+                                                                (fit_c2/c_0/sqrt(c_0))*bnd_A0*
+                                                                acoustic_fe_face_values.JxW(q_point)
+                                                                +
+                                                                acoustic_fe_face_values[pressureR].value(i,q_point) *
+                                                                acoustic_fe_face_values[pressureI].value(j,q_point) *
+                                                                (fit_c2/c_0/sqrt(c_0))*bnd_A0*
+                                                                acoustic_fe_face_values.JxW(q_point)
+                                                                +
+                                                                acoustic_fe_face_values[pressureI].value(i,q_point) *
+                                                                acoustic_fe_face_values[pressureI].value(j,q_point) *
+                                                                (fit_c2/c_0/sqrt(c_0))*bnd_A0*
+                                                                acoustic_fe_face_values.JxW(q_point)
+                                                                -
+                                                                acoustic_fe_face_values[pressureI].value(i,q_point) *
+                                                                acoustic_fe_face_values[pressureR].value(j,q_point) *
+                                                                (fit_c2/c_0/sqrt(c_0))*bnd_A0*
+                                                                acoustic_fe_face_values.JxW(q_point);
+
+                                      cell_damp_matrix(i,j) +=  acoustic_fe_face_values[pressureR].value(i,q_point) *
+                                                                acoustic_fe_face_values[pressureR].value(j,q_point) *
+                                                                (fit_c1/c_0/sqrt(c_0))*bnd_A0*
+                                                                acoustic_fe_face_values.JxW(q_point)
+                                                                +
+                                                                acoustic_fe_face_values[pressureR].value(i,q_point) *
+                                                                acoustic_fe_face_values[pressureI].value(j,q_point) *
+                                                                (fit_c1/c_0/sqrt(c_0))*bnd_A0*
+                                                                acoustic_fe_face_values.JxW(q_point)
+                                                                +
+                                                                acoustic_fe_face_values[pressureI].value(i,q_point) *
+                                                                acoustic_fe_face_values[pressureI].value(j,q_point) *
+                                                                (fit_c1/c_0/sqrt(c_0))*bnd_A0*
+                                                                acoustic_fe_face_values.JxW(q_point)
+                                                                -
+                                                                acoustic_fe_face_values[pressureI].value(i,q_point) *
+                                                                acoustic_fe_face_values[pressureR].value(j,q_point) *
+                                                                (fit_c1/c_0/sqrt(c_0))*bnd_A0*
+                                                                acoustic_fe_face_values.JxW(q_point);
+
+                                      cell_stif_matrix(i,j) +=  acoustic_fe_face_values[pressureR].value(i,q_point) *
+                                                                acoustic_fe_face_values[pressureR].value(j,q_point) *
+                                                                (fit_c0/c_0/sqrt(c_0))*bnd_A0*
+                                                                acoustic_fe_face_values.JxW(q_point)
+                                                                +
+                                                                acoustic_fe_face_values[pressureR].value(i,q_point) *
+                                                                acoustic_fe_face_values[pressureI].value(j,q_point) *
+                                                                (fit_c0/c_0/sqrt(c_0))*bnd_A0*
+                                                                acoustic_fe_face_values.JxW(q_point)
+                                                                +
+                                                                acoustic_fe_face_values[pressureI].value(i,q_point) *
+                                                                acoustic_fe_face_values[pressureI].value(j,q_point) *
+                                                                (fit_c0/c_0/sqrt(c_0))*bnd_A0*
+                                                                acoustic_fe_face_values.JxW(q_point)
+                                                                -
+                                                                acoustic_fe_face_values[pressureI].value(i,q_point) *
+                                                                acoustic_fe_face_values[pressureR].value(j,q_point) *
+                                                                (fit_c0/c_0/sqrt(c_0))*bnd_A0*
+                                                                acoustic_fe_face_values.JxW(q_point);
+                                                  
+                                  }
+                  }
+                }
+            }
+         }
 
 
 
@@ -1080,29 +1163,13 @@ void AcoustoElastic<dim>::solve_reduced()
    } 
 }
 
-
 template <int dim>
-void AcoustoElastic<dim>::run(unsigned int step)
+void AcoustoElastic<dim>::read_params()
 {
-   deallog << "Initialising and reading grid... ";
-
-   make_grid();
-
-
    f_0=prm.get_double("f_0");
    f_1=prm.get_double("f_1");
+   n_f=prm.get_double("n_f");
 
-   if(f_1>f_0)
-   {
-      n_f=prm.get_double("n_f");
-      sweep=true;
-   }
-   else
-   {
-      omega=f_0*2*M_PI;
-      sweep=false;
-   }
-   
    rho_s=prm.get_double("rho_s");
    
    nu_s=prm.get_double("nu_s");
@@ -1119,9 +1186,37 @@ void AcoustoElastic<dim>::run(unsigned int step)
    cp=prm.get_double("cp");
    gamma=prm.get_double("gamma");
 
-   fit_c2=prm.get_double("fit_c2");
-   fit_c1=prm.get_double("fit_c1");
-   fit_c0=prm.get_double("fit_c0");
+
+   step1_approx = prm.get_bool("step1_approx");
+
+   if(step1_approx)
+   {
+        fit_c2=prm.get_double("fit_c2");
+        fit_c1=prm.get_double("fit_c1");
+        fit_c0=prm.get_double("fit_c0");
+   }
+
+   point_load = prm.get_bool("point_load");
+
+   std::vector<std::string> point_load_info;
+   if(point_load)
+   {
+       point_load_info.clear();
+       point_load_info = Utilities::split_string_list(prm.get("point_load_loc"));
+       for(unsigned int dim_i = 0; dim_i < dim; dim_i++)
+       {
+           point_load_loc(dim_i) = ::atof(point_load_info[dim_i].c_str());
+       }
+       point_load_info.clear();
+       point_load_info = Utilities::split_string_list(prm.get("point_load_dir"));
+       for(unsigned int dim_i = 0; dim_i < dim; dim_i++)
+       {
+           point_load_dir(dim_i) = ::atof(point_load_info[dim_i].c_str());
+       }
+       point_load_info.clear();
+
+       point_load_mag = prm.get_double("point_load_mag");
+   }
 
    N_pod=prm.get_integer("N_pod");
    pod_thresh=prm.get_double("pod_thresh");
@@ -1130,12 +1225,40 @@ void AcoustoElastic<dim>::run(unsigned int step)
    std::ofstream prm_out("prm_out.txt");
    prm.print_parameters(prm_out, ParameterHandler::Text);
 
+}
+
+template <int dim>
+void AcoustoElastic<dim>::run(unsigned int step)
+{
+   deallog << "Initialising and reading grid... ";
+
+   make_grid();
+
+   read_params();
+
+   if(f_1>f_0)
+   {
+      sweep=true;
+   }
+   else
+   {
+      omega=f_0*2*M_PI;
+      sweep=false;
+   }
+   
+
    setup_system();
 
    if(step == BLI_STEP_1) // BLI acousto-elastic step-1
+   {
+        deallog << "Starting Assembly for step 1 ..." <<std::endl;
         assemble_system(true);
+   }
    else // BLI acousto-elastic step-2 OR plain acousto-elastic (no admittance)
+   {
+       deallog << "Starting assembly for step 2 OR plain acousto-elastic ..." <<std::endl;
        assemble_system(false);
+   }
 
    //read_pod();
 
@@ -1150,10 +1273,11 @@ void AcoustoElastic<dim>::run(unsigned int step)
          for(unsigned int n_sweep=0; n_sweep<n_f; n_sweep++)
          {
             omega=(f_0+n_sweep*(f_1-f_0)/(n_f-1))*2*M_PI;
-            deallog <<"Frequency: " <<omega/2/M_PI<<" Hz"<<std::endl;
+            deallog <<"Frequency: " <<omega/2/M_PI<<" Hz ["<<n_sweep+1<<"/"<<n_f<<"]"<<std::endl;
 
             if(step == BLI_STEP_2) // BLI acousto-elastic step-2
             {
+                deallog << "Starting auxiliary assembly for step 2 ..." <<std::endl;
                 read_input(n_sweep);
                 assemble_system_aux();
                 //output_ktr(n_sweep);
