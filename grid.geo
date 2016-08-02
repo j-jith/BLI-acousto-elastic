@@ -31,7 +31,7 @@ nh_c_s = 3; //number of depthwise mesh nodes - cavity shroud-side
 nr_d = 3; //number of lengthwise mesh nodes - diffuser
 nh_d = 2; //number of depthwise mesh nodes - diffuser
 
-n_ex = 10; //number of circumferential mesh divisions in a pi/2 circ. extrusion
+n_ex = 5; //number of circumferential mesh divisions in a pi/2 circ. extrusion
 
 
 //Points
