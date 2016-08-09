@@ -57,11 +57,11 @@ class AcoustoElastic
    void output_binary(unsigned int num);
    void output_ktr(unsigned int num);
 
-   void assemble_system_impedance();
-   void assemble_system_impedance_step1_unsplit();
-   void assemble_system_impedance_step1_split();
-   void assemble_system_impedance_step2_unsplit();
-   void assemble_system_impedance_step2_split();
+   void assemble_impedance();
+   void assemble_impedance_step1_unsplit();
+   void assemble_impedance_step1_split();
+   void assemble_impedance_step2_unsplit();
+   void assemble_impedance_step2_split();
 
    ParameterHandler &prm;
 

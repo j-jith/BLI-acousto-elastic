@@ -76,7 +76,6 @@ void AcoustoElastic<dim>::assemble_impedance_step1_unsplit()
             hp_fe_values.reinit(cell);
 
             const FEValues<dim>& fe_values = hp_fe_values.get_present_fe_values();
-            const unsigned int n_q_points=fe_values.n_quadrature_points;
 
             cell_matrix.reinit(cell->get_fe().dofs_per_cell, cell->get_fe().dofs_per_cell);
 
@@ -199,7 +198,6 @@ void AcoustoElastic<dim>::assemble_impedance_step1_split()
             hp_fe_values.reinit(cell);
 
             const FEValues<dim>& fe_values = hp_fe_values.get_present_fe_values();
-            const unsigned int n_q_points=fe_values.n_quadrature_points;
 
             cell_mass_matrix.reinit(cell->get_fe().dofs_per_cell, cell->get_fe().dofs_per_cell);
             cell_damp_matrix.reinit(cell->get_fe().dofs_per_cell, cell->get_fe().dofs_per_cell);

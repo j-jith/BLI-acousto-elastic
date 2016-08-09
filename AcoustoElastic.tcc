@@ -426,7 +426,7 @@ void AcoustoElastic<dim>::read_params()
 {
    f_0=prm.get_double("f_0");
    f_1=prm.get_double("f_1");
-   n_f=prm.get_double("n_f");
+   n_f=prm.get_integer("n_f");
 
    rho_s=prm.get_double("rho_s");
    
@@ -445,7 +445,7 @@ void AcoustoElastic<dim>::read_params()
    gamma=prm.get_double("gamma");
 
 
-   solution_step = prm.get_bool("solution_step");
+   solution_step = prm.get_integer("solution_step");
 
    if(solution_step == BLI_STEP_1_APPROX || solution_step == BLI_STEP_2_APPROX)
    {
@@ -523,7 +523,7 @@ void AcoustoElastic<dim>::run()
             omega=(f_0+n_sweep*(f_1-f_0)/(n_f-1))*2*M_PI;
             deallog <<"Frequency: " <<omega/2/M_PI<<" Hz ["<<n_sweep+1<<"/"<<n_f<<"]"<<std::endl;
 
-            assemble_system_impedance();
+            assemble_impedance();
 
             solve();
             //output_results(n_sweep);

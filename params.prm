@@ -1,9 +1,6 @@
 # Listing of Parameters
 # ---------------------
 
-# Dimensions (2 or 3)
-set dimensions = 3
-
 # Degree of FE shape functions
 set degree_shape = 2
 
@@ -43,8 +40,8 @@ set point_load_dir = 0.0, 0.0, 1.0
 # Point load magnitude
 set point_load_mag = 1e3
 
-# second-order approximate form of step-1
-set step1_approx = true
+# solution step: 0 - Aco-El, 1 - BLI-1, 2 - BLI-1 (approx.), 3 - BLI-2, 4 - BLI-2 (approx.)
+set solution_step = 1
 
 # second order coefficient of polynomial fit of omega*sqrt(omega)
 set fit_c2 = 0.007243

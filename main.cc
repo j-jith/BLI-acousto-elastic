@@ -17,7 +17,7 @@ int main()
    bool assemble_and_dump=false;
    AcoustoElastic<dim> ac_el(prm, degree, assemble_and_dump);
 
-   ac_el.run(BLI_STEP_1);
+   ac_el.run();
 
    timer.stop ();
    deallog << "\n\n***All done!*** (" << timer.wall_time() << "s)" << std::endl;
