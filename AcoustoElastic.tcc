@@ -536,6 +536,7 @@ void AcoustoElastic<dim>::run()
         else
         {
             deallog <<"Frequency: " <<omega/2/M_PI<<" Hz"<<std::endl;
+            assemble_impedance();
             solve();
             output_results(0); 
         }

@@ -95,24 +95,24 @@ void AcoustoElastic<dim>::assemble_impedance_step1_unsplit()
                                     for(unsigned int q_point=0; q_point<acoustic_fe_face_values.n_quadrature_points; ++q_point)
                                     {
 
-                                        cell_matrix(i,j) += acoustic_fe_face_values[pressureR].value(i,q_point) *
+                                        cell_matrix(i,j) += -acoustic_fe_face_values[pressureR].value(i,q_point) *
                                                             acoustic_fe_face_values[pressureR].value(j,q_point) *
                                                             (omega/c_0*sqrt(omega/c_0))*bnd_A0* 
                                                             acoustic_fe_face_values.JxW(q_point)
-                                                            +
+                                                            -
                                                             acoustic_fe_face_values[pressureR].value(i,q_point) *
                                                             acoustic_fe_face_values[pressureI].value(j,q_point) *
-                                                            (omega/c_0/sqrt(omega/c_0))*bnd_A0* 
-                                                            acoustic_fe_face_values.JxW(q_point)
-                                                            +
-                                                            acoustic_fe_face_values[pressureI].value(i,q_point) *
-                                                            acoustic_fe_face_values[pressureI].value(j,q_point) *
-                                                            (omega/c_0/sqrt(omega/c_0))*bnd_A0* 
+                                                            (omega/c_0*sqrt(omega/c_0))*bnd_A0* 
                                                             acoustic_fe_face_values.JxW(q_point)
                                                             -
                                                             acoustic_fe_face_values[pressureI].value(i,q_point) *
+                                                            acoustic_fe_face_values[pressureI].value(j,q_point) *
+                                                            (omega/c_0*sqrt(omega/c_0))*bnd_A0* 
+                                                            acoustic_fe_face_values.JxW(q_point)
+                                                            +
+                                                            acoustic_fe_face_values[pressureI].value(i,q_point) *
                                                             acoustic_fe_face_values[pressureR].value(j,q_point) *
-                                                            (omega/c_0/sqrt(omega/c_0))*bnd_A0* 
+                                                            (omega/c_0*sqrt(omega/c_0))*bnd_A0* 
                                                             acoustic_fe_face_values.JxW(q_point);
 
                                     }

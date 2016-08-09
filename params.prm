@@ -55,13 +55,13 @@ set fit_c1 = 37.85
 set fit_c0 = -1.465e4
 
 # Initial Frequency
-set f_0   = 150
+set f_0   = 500
 
 # Final Frequency
-set f_1   = 749
+set f_1   = 500
 
 # No. of Frequencies
-set n_f   = 25
+set n_f   = 1
 
 # No. of POD inputs
 set N_pod = 50
