@@ -34,7 +34,7 @@ set mu    = 5.5459e-5
 # Apply point load
 set point_load = true
 # Point load location
-set point_load_loc = 0.120, 0.0, 0.011
+set point_load_loc = 0.174, 0.0, 0.011
 # Point load direction
 set point_load_dir = 0.0, 0.0, 1.0
 # Point load magnitude
