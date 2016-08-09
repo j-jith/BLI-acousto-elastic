@@ -7,10 +7,6 @@ void ParameterReader::declare_parameters()
 {
   //prm.enter_subsection ("Physical constants");
   //{
-      prm.declare_entry("dimensions", "2",
-                        Patterns::Integer(2, 3),
-                        "Dimension of the problem");
-
       prm.declare_entry("degree_shape", "1",
                         Patterns::Integer(1),
                         "Degree of the FE shape functions");
@@ -76,9 +72,9 @@ void ParameterReader::declare_parameters()
                         Patterns::Double(0),
                         "Magnitude of point load");
 
-      prm.declare_entry("step1_approx", "false",
-                        Patterns::Bool(),
-                        "Set flag to true for second-order approximate form of step-1");
+      prm.declare_entry("solution_step", "0",
+                        Patterns::Integer(0, 4),
+                        "0 - Acousto-Elastic, 1 - BLI step 1, 2 - BLI step 1 (approx), 3 - BLI step 2, 4 - BLI step 2 (approx)");
       prm.declare_entry("fit_c2", "0.002533",
                         Patterns::Double(0),
                         "2nd order coefficient of polynomial fit of omega*sqrt(omega)");

@@ -15,3 +15,5 @@ grid_out.msh
 # FRF output
 sweep/
 binary_op/
+# Data
+*.dat

@@ -7,7 +7,9 @@
 
 #define ACOUSTO_ELASTIC_STEP    0
 #define BLI_STEP_1              1
-#define BLI_STEP_2              2
+#define BLI_STEP_1_APPROX       2
+#define BLI_STEP_2              3
+#define BLI_STEP_2_APPROX       4
 
 #define SOLID_DOMAIN            101
 #define FLUID_DOMAIN            102
@@ -20,7 +22,7 @@ class AcoustoElastic
    public:
    AcoustoElastic(ParameterHandler &, const unsigned int, bool);
    void set_point_load(Point<dim> location, Point<dim> direction, double magnitude);
-   void run(unsigned int step);
+   void run();
 
    private:
    enum
@@ -45,8 +47,7 @@ class AcoustoElastic
    void my_sparsity_pattern();
    void setup_system();
    void read_input(unsigned int);
-   void assemble_system(bool step1);
-   void assemble_system_aux();
+   void assemble_system();
    void read_pod();
    void pod_aux();
    void dump_matrices();
@@ -56,11 +57,19 @@ class AcoustoElastic
    void output_binary(unsigned int num);
    void output_ktr(unsigned int num);
 
+   void assemble_system_impedance();
+   void assemble_system_impedance_step1_unsplit();
+   void assemble_system_impedance_step1_split();
+   void assemble_system_impedance_step2_unsplit();
+   void assemble_system_impedance_step2_split();
+
    ParameterHandler &prm;
 
    std::vector<Vector<double> > pod_modes;
    unsigned int N_pod;
    double pod_thresh;
+
+   unsigned int solution_step;
 
    double omega;
    double f_0, f_1;
@@ -78,8 +87,7 @@ class AcoustoElastic
 
    double rho_0, c_0, mu, kappa, cp, gamma;
 
-   // for approximating omega * sqrt(omega)
-   bool step1_approx;
+   // for approximating omega * sqrt(omega);
    double fit_c2, fit_c1, fit_c0;
 
    Triangulation<dim> triangulation;
@@ -109,5 +117,8 @@ class AcoustoElastic
 
 // template class implementation
 #include "AcoustoElastic.tcc"
+#include "AcoustoElastic_sparsity.tcc"
+#include "AcoustoElastic_assemble.tcc"
+#include "AcoustoElastic_assemble_impedance.tcc"
 
 #endif
