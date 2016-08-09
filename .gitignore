@@ -17,3 +17,5 @@ sweep/
 binary_op/
 # Data
 *.dat
+# python pyc files
+*.pyc
